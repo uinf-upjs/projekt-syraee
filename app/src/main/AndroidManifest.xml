@@ -40,12 +40,6 @@
 
         </activity>
         <activity
-            android:name=".HomeScreenAktivity"
-            android:exported="true"
-            android:theme="@style/Theme.DiscMaster">
-
-        </activity>
-        <activity
             android:name=".HodyAktivity"
             android:exported="true"
             android:theme="@style/Theme.DiscMaster">
@@ -116,7 +110,7 @@
                 android:resource="@xml/path_provider"
                 />
         </provider>
-        <receiver android:name=".ReminderBroadcast" />
+
     </application>
 
 </manifest>
