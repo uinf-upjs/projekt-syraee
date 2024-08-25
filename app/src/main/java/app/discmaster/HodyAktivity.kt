@@ -1,6 +1,7 @@
 package app.discmaster
 
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -17,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 
 class HodyAktivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,12 +31,19 @@ class HodyAktivity : ComponentActivity() {
 
 @Composable
 fun HodyScreen() {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
+    WebView(url = "https://www.fyft.sk/skilltoys-clanky/zakladne-pokrocile-hody-frisbee-ultimate/")
+}
 
-        Text(text = "achievment", fontSize = 40.sp, modifier = Modifier.padding(bottom = 20.dp) )
-    }
+@SuppressLint("SetJavaScriptEnabled")
+@Composable
+fun WebView(url: String) {
+    AndroidView(
+        factory = { context ->
+            android.webkit.WebView(context).apply {
+                settings.javaScriptEnabled = true
+                loadUrl(url)
+            }
+        },
+        modifier = Modifier.fillMaxSize()
+    )
 }

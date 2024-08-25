@@ -7,7 +7,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import app.discmaster.database.entities.Account
+import app.discmaster.database.entities.Activity
+import app.discmaster.database.entities.Event
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.mindrot.jbcrypt.BCrypt
 import java.util.UUID
 
@@ -16,10 +21,18 @@ class AccountViewModel (private val accountRepository: AccountRepository) : View
     private val _account = MutableLiveData<Account>()
     val account: LiveData<Account> = _account
 
-    fun getAccount(accountId: UUID) {
+    private val _activities = MutableLiveData<List<Activity>>()
+    val activities: LiveData<List<Activity>> = _activities
+
+    private val _events = MutableLiveData<List<Event>>()
+    val events: LiveData<List<Event>> = _events
+
+
+    fun getAccount(accountId: UUID){
         viewModelScope.launch {
-            val fetchedAccount = accountRepository.getAccount(accountId)
-            _account.postValue(fetchedAccount)
+            accountRepository.getAccount(accountId).collect { fetchedAccount ->
+                _account.postValue(fetchedAccount)
+            }
         }
     }
 
@@ -29,12 +42,71 @@ class AccountViewModel (private val accountRepository: AccountRepository) : View
         }
     }
 
-    fun getIdByLogin(loginName: String){
+    fun delete(uuid: UUID, uuidAcc: UUID) {
         viewModelScope.launch {
-            val accountId = accountRepository.getIdByLogin(loginName)
-            _account.postValue(accountRepository.getAccount(accountId))
+            accountRepository.delete(uuid)
+            _activities.value = accountRepository.getActivitiesByAccount(uuidAcc)
+        }
+    }
+
+    fun deleteEvent(uuid: UUID, uuidEve: UUID) {
+        viewModelScope.launch {
+            accountRepository.deleteEvent(uuid)
+            _events.value = accountRepository.getEventsByAccount(uuidEve)
+        }
+    }
+    fun update(account: Account) {
+        viewModelScope.launch { accountRepository.update(account)
+        }
+
+    }
+
+    suspend fun checkLogin(login: String) : Boolean {
+        return withContext(Dispatchers.IO) {
+             accountRepository.existingLogin(login)
 
         }
+
+    }
+
+    suspend fun chechForChangePassword(login: String, email: String): Boolean {
+        return withContext(Dispatchers.IO) {
+            accountRepository.checkLoginEmail(login, email)
+        }
+    }
+
+    fun updatePassword(uuid: UUID, newPassword: String) {
+        viewModelScope.launch {
+            accountRepository.updatePassword(uuid, newPassword)
+        }
+    }
+    fun getActivitiesByAccount(accountId: UUID) {
+        viewModelScope.launch {
+            val activities = accountRepository.getActivitiesByAccount(accountId)
+            _activities.postValue(activities)
+        }
+    }
+
+    fun getEventsByAccount(accountId: UUID) {
+        viewModelScope.launch {
+            val events = accountRepository.getEventsByAccount(accountId)
+            _events.postValue(events)
+        }
+    }
+
+    suspend fun getIdByLogin(loginName: String) :UUID? {
+        viewModelScope.launch {
+            val accountId = accountRepository.getIdByLogin(loginName)
+            if (accountId != null) {
+                accountRepository.getAccount(accountId).collect { fetchedAccount ->
+                    _account.postValue(fetchedAccount)
+
+                }
+
+            }
+
+        }
+        return accountRepository.getIdByLogin(loginName)
     }
 
     fun verifyPassword(loginName: String, password: String, callback: (Boolean) -> Unit) {
@@ -58,5 +130,6 @@ class AccountViewModel (private val accountRepository: AccountRepository) : View
         }
     }
 }
+
 
 

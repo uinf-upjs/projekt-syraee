@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">DiscMaster</string>
+    <string name="greeting">Welcome!</string>
+    <string name="first_name">first name</string>
+    <string name="last_name">last name</string>
+    <string name="username_field">username</string>
+    <string name="password_field">password</string>
+    <string name="newPassword_field">new password</string>
+    <string name="register_button">Register</string>
+    <string name="signIn_button">Sign in</string>
+    <string name="forgottenPassword_button">Forgotten password?</string>
+    <string name="verify_button">Verify</string>
+    <string name="updatePassword_button">Update password</string>
+    <string name="rules_tab">Rules</string>
+    <string name="throws_tab">Throwing technique</string>
+    <string name="weekly">Weekly master</string>
+    <string name="event">Event</string>
+    <string name="date">Date</string>
+    <string name="count_throws">Count of throws</string>
+    <string name="hand">Hand</string>
+
+    <string name="distance">Distance</string>
+    <string name="weather">Weather</string>
+    <string name="throw_type">Throw type</string>
+    <string name="name">Name</string>
+    <string name="place">Place</string>
+    <string name="category">Category</string>
+    <string name="text">Description</string>
+    <string name="event_heading">Event  record</string>
+    <string name="activity_heading">Throw record</string>
+    <string name="change_password">Change password</string>
+    <string name="snackbar_login">This username is already in use!</string>
+    <string name="snackbar_empty">Fill the fields!</string>
+    <string name="snackbar_wrong">Wrong data!</string>
+    <string name="snackbar_verified">User verified. Enter a new password!</string>
+    <string name="snackbar_successChange">Password was successfully updated!</string>
+    <string name="not_found">User not found!</string>
+
+    <string name="permission_granted">Permission granted</string>
+    <string name="permission_denied">Permission denied</string>
+    <string name="right_hand">Right</string>
+    <string name="left_hand">Left</string>
+    <string name="dominant_hand">Dominant</string>
+    <string name="weak_hand">Weak</string>
+    <string name="sunny">Sunny</string>
+    <string name="rainy">Rainy</string>
+    <string name="snowing">Snowing</string>
+    <string name="windy">Windy</string>
+</resources>

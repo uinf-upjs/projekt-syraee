@@ -6,6 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
+import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import app.discmaster.database.entities.Account
 import app.discmaster.database.entities.Achievment
@@ -23,7 +24,7 @@ import java.util.UUID
 
 @Database(
     entities = [Account::class, Achievment::class, Activity::class, Event::class],
-    version = 1
+    version = 5
 )
 @TypeConverters(UuidConverter::class)
 abstract class DiscMasterDatabase : RoomDatabase() {
@@ -38,28 +39,93 @@ abstract class DiscMasterDatabase : RoomDatabase() {
         @Volatile
         private var INSTANCE: DiscMasterDatabase? = null
 
+        val MIGRATION_1_2 = object : Migration(1, 2) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE event ADD COLUMN name TEXT NOT NULL DEFAULT ''")
+            }
+        }
+
+        val MIGRATION_2_3 = object : Migration(2, 3) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("""
+            CREATE TABLE achievments_new (
+                uuidAch TEXT PRIMARY KEY NOT NULL,
+                name TEXT NOT NULL,
+                count INTEGER NOT NULL,
+                hand TEXT NOT NULL,
+                distance TEXT NOT NULL,
+                weather TEXT NOT NULL,
+                throwType TEXT NOT NULL,
+                photo BLOB NOT NULL
+            )
+        """)
+                database.execSQL("DROP TABLE achievment")
+                database.execSQL("ALTER TABLE achievments_new RENAME TO achievment")
+            }
+        }
+
+        val MIGRATION_3_4 = object : Migration(3,4) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("""
+            CREATE TABLE achievments_neww (
+                uuidAch TEXT PRIMARY KEY NOT NULL,
+                name TEXT NOT NULL,
+                count INTEGER NOT NULL,
+                hand TEXT NOT NULL,
+                distance TEXT NOT NULL,
+                weather TEXT NOT NULL,
+                throwType TEXT NOT NULL,
+                photo TEXT NOT NULL
+            )
+        """)
+                database.execSQL("DROP TABLE achievment")
+                database.execSQL("ALTER TABLE achievments_neww RENAME TO achievment")
+            }
+
+        }
+
+        val MIGRATION_4_5 = object : Migration(4,5) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("""
+            CREATE TABLE achievments_neeww (
+                uuidAch TEXT PRIMARY KEY NOT NULL,
+                name TEXT NOT NULL,
+                count INTEGER NOT NULL,
+                hand TEXT NOT NULL,
+                distance INTEGER NOT NULL,
+                weather TEXT NOT NULL,
+                throwType TEXT NOT NULL,
+                photo TEXT NOT NULL
+            )
+        """)
+                database.execSQL("DROP TABLE achievment")
+                database.execSQL("ALTER TABLE achievments_neeww RENAME TO achievment")
+            }
+
+        }
+
+
+
+
         fun getInstance(context: Context, scope: CoroutineScope): DiscMasterDatabase {
-            synchronized(this) {
-                return INSTANCE ?: Room.databaseBuilder(
+            return INSTANCE ?: synchronized(this) {
+                val instance = Room.databaseBuilder(
                     context.applicationContext,
                     DiscMasterDatabase::class.java,
                     "app_db"
-                ).addCallback(object : RoomDatabase.Callback() {
-                    override fun onCreate(db: SupportSQLiteDatabase) {
+                ).addCallback(object : RoomDatabase.Callback(){
+                    override fun onCreate(db: SupportSQLiteDatabase){
                         super.onCreate(db)
-                        INSTANCE?.let {
-                            scope.launch{
-                                it.accountDao.insertAccount(Account("Alzbeta", "Andrejkova", "alzbeta", "123456", "andrejkovaalzbeta@gmail.com", "KEFEAR", "prava"))
-                            }
-                        }
+                           scope.launch {
+                               val achievmentDao = getInstance(context, scope).achievmentDao
+                                achievmentDao.insert(Achievment("Nadšenec do disku",1000,"", 0, "", "","android.resource://${context.packageName}/drawable/disc_enthusiast"))
+                           }
+
                     }
-                })
+                }).build()
+                    INSTANCE = instance
+                    instance
 
-
-
-                    .build().also {
-                    INSTANCE = it
-                }
             }
         }
     }

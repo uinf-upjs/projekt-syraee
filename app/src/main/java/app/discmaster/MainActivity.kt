@@ -1,5 +1,7 @@
 package app.discmaster
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -17,8 +19,19 @@ import app.discmaster.ui.theme.DiscMasterTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent {
-            LoginScreen(accountViewModel)
+        val sharedPref = getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+        val loggedInUser = sharedPref.getString("logged_in_user", null)
+
+        if (loggedInUser != null) {
+            val intent = Intent(this, MenuAktivity::class.java)
+            startActivity(intent)
+            finish()
+        } else {
+            setContent {
+                val intent = Intent(this, LoginAktivity::class.java)
+                startActivity(intent)
+                finish()
+            }
         }
     }
 

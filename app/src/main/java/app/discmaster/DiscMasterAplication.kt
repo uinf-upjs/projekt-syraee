@@ -1,6 +1,11 @@
 package app.discmaster
 
 import android.app.Application
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
+import android.os.Build
+import androidx.annotation.RequiresApi
 import app.discmaster.database.AccountRepository
 import app.discmaster.database.AchievmentRepository
 import app.discmaster.database.ActivityRepository
@@ -17,4 +22,6 @@ class DiscMasterAplication : Application(){
     val achievmentRepository by lazy { AchievmentRepository(database.achievmentDao) }
     val activityRepository by lazy { ActivityRepository(database.activityDao) }
     val eventRepository by lazy { EventRepository(database.eventDao) }
+
+
 }

@@ -1,6 +1,7 @@
 package app.discmaster.database.interfaces
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
@@ -16,8 +17,11 @@ interface AchievmentDao {
     @Insert
     suspend fun insert(achievment: Achievment)
 
+    @Query("DELETE FROM achievment WHERE uuidAch = :uuid")
+    suspend fun delete(uuid: UUID)
+
     @Query("SELECT * FROM achievment")
-    fun getAllAchievments(): Flow<List<Achievment>>
+    suspend fun getAllAchievments(): List<Achievment>
 
     @Query("SELECT * FROM achievment WHERE uuidAch = :uuid")
     suspend fun getAchievmentById(uuid: UUID): Achievment
@@ -25,5 +29,7 @@ interface AchievmentDao {
     @Transaction
     @Query("SELECT * FROM achievment WHERE uuidAch = :uuid")
     fun getAchievmentWithAccounts(uuid: UUID): Flow<List<AchievmentWithAccounts>>
+
+
 
 }

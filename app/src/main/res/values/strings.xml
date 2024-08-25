@@ -1,3 +1,51 @@
-<resources>
-    <string name="app_name">DiscMaster</string>
-</resources>
+<?xml version="1.0" encoding="utf-8"?>
+
+    <resources>
+        <string name="app_name">DiscMaster</string>
+        <string name="greeting">Vitaj!</string>
+        <string name="first_name">meno</string>
+        <string name="last_name">priezvisko</string>
+        <string name="username_field">používateľské meno</string>
+        <string name="password_field">heslo</string>
+        <string name="newPassword_field">nové heslo</string>
+        <string name="register_button">Registrovať sa</string>
+        <string name="signIn_button">Prihlásiť sa</string>
+        <string name="forgottenPassword_button">Zabudnuté heslo?</string>
+        <string name="verify_button">Overiť</string>
+        <string name="updatePassword_button">Aktualizovať heslo</string>
+        <string name="rules_tab">Pravidlá</string>
+        <string name="throws_tab">Technika hodov</string>
+        <string name="weekly">Týždenný cieľ</string>
+        <string name="event">Udalosť</string>
+        <string name="date">Dátum</string>
+        <string name="count_throws">Počet hodov</string>
+        <string name="hand">Ruka</string>
+
+        <string name="distance">Vzdialenosť</string>
+        <string name="weather">Počasie</string>
+        <string name="throw_type">Typ hodu</string>
+        <string name="name">Názov</string>
+        <string name="place">Miesto</string>
+        <string name="category">Kategória</string>
+        <string name="text">Popis</string>
+        <string name="event_heading">Zápis turnaja</string>
+        <string name="activity_heading">Zápis hodov</string>
+        <string name="change_password">Zmena hesla</string>
+        <string name="snackbar_login">Toto používateľské meno sa používa!</string>
+        <string name="snackbar_empty">Vyplňte polia!</string>
+        <string name="snackbar_wrong">Nesprávne údaje!</string>
+        <string name="snackbar_verified">Používateľ overený. Zadajte nové heslo</string>
+        <string name="snackbar_successChange">Heslo bolo úspešne zmenené</string>
+        <string name="not_found">Používateľ nebol najdený</string>
+
+        <string name="permission_granted">Povolenie udelené</string>
+        <string name="permission_denied">Povolenie odmietnuté</string>
+        <string name="right_hand">Pravá</string>
+        <string name="left_hand">Ľavá</string>
+    <string name="dominant_hand">Dominantná</string>
+    <string name="weak_hand">Slabá</string>
+    <string name="sunny">Slnečno</string>
+    <string name="rainy">Daždivo</string>
+    <string name="snowing">Sneženie</string>
+    <string name="windy">Veterno</string>
+    </resources>

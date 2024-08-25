@@ -2,6 +2,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-feature android:name="android.hardware.camera.any" />
+
     <application
         android:name=".DiscMasterAplication"
         android:allowBackup="true"
@@ -12,7 +20,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.DiscMaster"
-        tools:targetApi="31">
+        tools:targetApi="33"
+        android:localeConfig="@xml/locale_config">
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -26,53 +35,88 @@
         <activity
             android:name=".LoginAktivity"
             android:exported="true"
+            android:configChanges="locale|layoutDirection"
             android:theme="@style/Theme.DiscMaster">
+
         </activity>
         <activity
             android:name=".HomeScreenAktivity"
             android:exported="true"
             android:theme="@style/Theme.DiscMaster">
+
         </activity>
         <activity
             android:name=".HodyAktivity"
             android:exported="true"
             android:theme="@style/Theme.DiscMaster">
+
         </activity>
         <activity
             android:name=".CalendarAktivty"
             android:exported="true"
             android:theme="@style/Theme.DiscMaster">
+
         </activity>
         <activity
             android:name=".AddRecordAktivity"
             android:exported="true"
             android:theme="@style/Theme.DiscMaster">
+
         </activity>
         <activity
             android:name=".AchievmentsAktivity"
             android:exported="true"
             android:theme="@style/Theme.DiscMaster">
+
         </activity>
         <activity
             android:name=".AccountAktivity"
             android:exported="true"
             android:theme="@style/Theme.DiscMaster">
+
         </activity>
         <activity
             android:name=".MenuAktivity"
             android:exported="true"
             android:theme="@style/Theme.DiscMaster">
+
         </activity>
         <activity
             android:name=".PravidlaAktivity"
             android:exported="true"
             android:theme="@style/Theme.DiscMaster">
+
         </activity>
         <activity
             android:name=".RegistrationActivity"
             android:exported="true"
             android:theme="@style/Theme.DiscMaster">
+
         </activity>
+        <activity
+            android:name=".AddEventAktivity"
+            android:exported="true"
+            android:theme="@style/Theme.DiscMaster">
+
+        </activity>
+        <activity
+            android:name=".EventAktivity"
+            android:exported="true"
+            android:theme="@style/Theme.DiscMaster">
+
+        </activity>
+
+        <provider
+            android:authorities="${applicationId}.provider"
+            android:name="androidx.core.content.FileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/path_provider"
+                />
+        </provider>
+        <receiver android:name=".ReminderBroadcast" />
     </application>
 
 </manifest>

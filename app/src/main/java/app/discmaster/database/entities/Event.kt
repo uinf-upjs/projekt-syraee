@@ -10,6 +10,7 @@ import java.util.UUID
 
 @Entity()
 data class Event (
+    val name: String,
     val date: Date,
     val place: String,
     val kategory: String,

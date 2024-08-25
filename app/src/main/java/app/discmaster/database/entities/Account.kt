@@ -18,6 +18,7 @@ data class Account (
     val achievmentId: UUID? = null
 
 ) : Serializable {
+
     @PrimaryKey
     var uuidAcc: UUID = UUID.randomUUID()
 

@@ -5,16 +5,15 @@ import androidx.room.PrimaryKey
 import java.io.Serializable
 import java.util.UUID
 
-@Entity()
+@Entity(tableName = "achievment")
 data class Achievment (
     val name: String,
-    val surname: String,
-    val login: String,
-    val password: String,
-    val email: String,
-    val club: String,
-    val mainHand: String,
-    val photo: ByteArray
+    val count: Int,
+    val hand: String,
+    val distance: Int,
+    val weather: String,
+    val throwType: String,
+    val photo: String
 
 ) : Serializable {
     @PrimaryKey
