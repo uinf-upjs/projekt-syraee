@@ -320,7 +320,6 @@ fun CalendarGrid(
         weekdays.forEach {
             WeekdayCell(weekday = it)
         }
-        // Adds Spacers to align the first day of the month to the correct weekday
         repeat(if (startFromSunday) weekdayFirstDay - 1 else (weekdayFirstDay + 5) % 7) {
             Spacer(modifier = Modifier)
         }
@@ -518,8 +517,12 @@ fun EventItems(event:Event){
                     .align(Alignment.CenterVertically)
             ) {
                 Text(text = event.name, style = typography.bodyMedium)
+                Spacer(modifier = Modifier.height(7.dp))
+                val text = event.date.let { SimpleDateFormat("dd.MM.yyyy").format(it)}
+                Text(text = text.toString(), style = typography.bodySmall)
+                Spacer(modifier = Modifier.height(10.dp))
                 Text(text = event.text, style = typography.bodySmall)
-                Text(text = event.date.toString(), style = typography.bodySmall)
+
             }
         }
     }

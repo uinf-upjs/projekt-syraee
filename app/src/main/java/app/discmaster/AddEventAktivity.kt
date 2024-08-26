@@ -87,15 +87,28 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import java.util.UUID
 
 
 class AddEventAktivity : ComponentActivity() {
+
+    private val eventUUID: UUID? by lazy {
+        val uuidString = intent?.getStringExtra("EVENT_UUID")
+        uuidString?.let { UUID.fromString(it) }
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            AddEventScreen(accountViewModel = accountViewModel, eventViewModel = eventViewModel)
+            if (eventUUID != null) {
+                eventViewModel.getEvent(eventUUID!!)
+                AddEventScreen(accountViewModel = accountViewModel, eventViewModel = eventViewModel)
+            } else {
+                AddEventScreen(accountViewModel = accountViewModel, eventViewModel = eventViewModel)
+            }
         }
-    }
+
+        }
+
 
     private val accountViewModel: AccountViewModel by viewModels {
         AccountViewModel.AccountViewModelFactory((application as DiscMasterAplication).accountRepository)
@@ -135,14 +148,14 @@ fun AddEventScreen(accountViewModel: AccountViewModel, eventViewModel: EventView
     )
     val scope = rememberCoroutineScope()
     var name by  remember {  mutableStateOf("") }
-    val place = remember { mutableStateOf("") }
-
+    var place by remember { mutableStateOf("") }
+    var editMode by remember { mutableStateOf(false) }
     var file = context.createImageFile()
     var uri = FileProvider.getUriForFile(context, context.packageName + ".provider", file)
 
 
 
-
+    val event = eventViewModel.event.observeAsState(null)
     var capturedImageUri by remember {
         mutableStateOf<Uri>(Uri.EMPTY)
     }
@@ -170,8 +183,7 @@ fun AddEventScreen(accountViewModel: AccountViewModel, eventViewModel: EventView
     }
 
     val takePicture = { ->
-        file = context.createImageFile()
-        uri = FileProvider.getUriForFile(context, context.packageName + ".provider", file)
+
         cameraLauncher.launch(uri)
     }
     val category = listOf("MIX", "OPEN", "FUN")
@@ -192,10 +204,19 @@ fun AddEventScreen(accountViewModel: AccountViewModel, eventViewModel: EventView
     val language = sharedPref.getString("language", "Default")
     AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(language))
 
-    LaunchedEffect(username) {
+    LaunchedEffect(event.value) {
+        event.value?.let {
+            editMode = it.uuidEve != null
+            name = it.name
+            place = it.place
+            date.value = it.date
+            selectedCategory = it.kategory
+            text.value = it.text
 
+        }
         accountViewModel.getIdByLogin(username!!)
     }
+
     val account = accountViewModel.account.observeAsState(null)
     Scaffold(
         snackbarHost = {
@@ -265,8 +286,8 @@ fun AddEventScreen(accountViewModel: AccountViewModel, eventViewModel: EventView
             item { Spacer(modifier = Modifier.height(25.dp)) }
             item {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    TextField(value = place.value,
-                        onValueChange = { place.value = it },
+                    TextField(value = place,
+                        onValueChange = { place = it },
                         label = { Text(stringResource(id = R.string.place)) },
                         modifier = Modifier
                             .width(160.dp)
@@ -327,7 +348,13 @@ fun AddEventScreen(accountViewModel: AccountViewModel, eventViewModel: EventView
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    if (capturedImageUri != Uri.EMPTY) {
+                    if(editMode && capturedImageUri==Uri.EMPTY){
+                        Image(bitmap = imageBitmapFromBytes(event.value!!.photo), contentDescription = "photo",
+                            modifier = Modifier
+                                .size(230.dp)
+                                .clip(RoundedCornerShape(10.dp)))
+                    }
+                    else if (capturedImageUri != Uri.EMPTY) {
                         Image(
                             painter = rememberImagePainter(capturedImageUri),
                             contentDescription = null,
@@ -409,19 +436,43 @@ fun AddEventScreen(accountViewModel: AccountViewModel, eventViewModel: EventView
                     IconButton(
 
                         onClick = {
-                            if (account.value != null && name !=null && place !=null) {
+                            if(editMode){
+                                if(capturedImageUri==Uri.EMPTY){
+                                    accountViewModel.updateEvent(Event(
+                                        name = name,
+                                        date.value,
+                                        place,
+                                        selectedCategory,
+                                        text.value,
+                                        event.value!!.photo,
+                                        account.value!!.uuidAcc
 
+                                    ))
+                                } else {
                                 var bajty =
                                     context.contentResolver.openInputStream(capturedImageUri)
                                         ?.readBytes()
 
+                                accountViewModel.updateEvent(Event(
+                                    name = name,
+                                    date.value,
+                                    place,
+                                    selectedCategory,
+                                    text.value,
+                                    bajty!!,
+                                    account.value!!.uuidAcc
 
+                                ))}
+                            } else if (!editMode && account.value != null) {
+                                var bajty =
+                                    context.contentResolver.openInputStream(capturedImageUri)
+                                        ?.readBytes()
                                 if (bajty!!.isNotEmpty()) {
                                     eventViewModel.insert(
                                         Event(
                                             name,
                                             date.value,
-                                            place.value,
+                                            place,
                                             selectedCategory,
                                             text.value,
                                             bajty,
@@ -433,7 +484,7 @@ fun AddEventScreen(accountViewModel: AccountViewModel, eventViewModel: EventView
                                         Event(
                                             name,
                                             date.value,
-                                            place.value,
+                                            place,
                                             selectedCategory,
                                             text.value,
                                             ByteArray(0),
@@ -444,11 +495,6 @@ fun AddEventScreen(accountViewModel: AccountViewModel, eventViewModel: EventView
                                 val intent = Intent(context, MenuAktivity::class.java)
                                 context.startActivity(intent)
 
-                            } else {
-                                scope.launch {
-                                    val snackbarText = context.getString(R.string.snackbar_empty)
-                                    snackbarHostState.showSnackbar(snackbarText)
-                                }
                             }
 
                         },

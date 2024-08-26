@@ -8,6 +8,7 @@ import androidx.room.Transaction
 import androidx.room.Update
 import androidx.room.Upsert
 import app.discmaster.database.entities.Account
+import app.discmaster.database.entities.Event
 import app.discmaster.database.entities.connecting.AccountWithActivities
 import app.discmaster.database.entities.connecting.AccountWithEvents
 import kotlinx.coroutines.flow.Flow
@@ -21,6 +22,9 @@ interface AccountDao {
 
     @Update
     suspend fun update(account: Account)
+
+    @Update
+    suspend fun updateEvent(event : Event)
 
     @Query("SELECT * FROM account WHERE uuidAcc = :uuid")
     fun getAccountById(uuid: UUID): Flow<Account>

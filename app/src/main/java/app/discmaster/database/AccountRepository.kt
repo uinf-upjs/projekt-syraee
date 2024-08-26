@@ -17,6 +17,10 @@ class AccountRepository(private val accountDao: AccountDao) {
         accountDao.update(account)
     }
 
+    suspend fun updateEvent(event: Event) {
+        accountDao.updateEvent(event)
+    }
+
     fun getAccount(accoundId: UUID): Flow<Account> {
         return accountDao.getAccountById(accoundId)
     }

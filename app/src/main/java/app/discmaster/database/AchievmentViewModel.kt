@@ -22,6 +22,12 @@ class AchievmentViewModel(private val achievmentRepository: AchievmentRepository
         }
     }
 
+    fun clearDatabase() {
+        viewModelScope.launch {
+            achievmentRepository.clearDatabase()
+        }
+    }
+
     fun delete(uuid: UUID) {
         viewModelScope.launch {
             achievmentRepository.delete(uuid)

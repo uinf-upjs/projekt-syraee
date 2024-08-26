@@ -137,18 +137,20 @@ fun AccountScreen(accountViewModel: AccountViewModel) {
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var login by remember { mutableStateOf("") }
-    val clubs = listOf("KEFEAR", "Sky Up", "Paskudy")
-    val hands = listOf(stringResource(id = R.string.weak_hand), stringResource(id = R.string.dominant_hand))
+    val clubs = listOf("KEFEAR", "Sky Up", "Paskudy", "Outsiterz", "CENADA", "Tri Veže", "Kus Plastu", "North Side Turzovka", "Banník lásky")
+    val hands = listOf(stringResource(id = R.string.right_hand), stringResource(id = R.string.left_hand))
     var selectedClub by remember { mutableStateOf(clubs[0]) }
     var selectedHand by remember { mutableStateOf(hands[0]) }
 
 
+    val locale = remember { mutableStateOf(language) }
     val zabudnuteHeslo = remember { mutableStateOf(false) }
     val isPasswordUpdatedSuccessfully = remember { mutableStateOf(false) }
     var isExpandedClubs by remember {
         mutableStateOf(false)
     }
     val valid = remember { mutableStateOf(false) }
+    val wasChanged = remember { mutableStateOf(false) }
     var isExpandedHand by remember {
         mutableStateOf(false)
     }
@@ -387,6 +389,14 @@ fun AccountScreen(accountViewModel: AccountViewModel) {
                         text = language.toString(),
                         fontSize = 15.sp,
                         modifier = Modifier.align(Alignment.CenterVertically)
+                            .clickable {
+
+                                locale.value =  if (locale.value == "sk") "en" else "sk"
+                                with(sharedPref.edit()) {
+                                    putString("language", locale.value)
+                                    apply()
+                                }
+                            AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(locale.value)) }
                     )
 
 
@@ -431,7 +441,6 @@ fun AccountScreen(accountViewModel: AccountViewModel) {
                         )
 
                     }
-
                             IconButton(onClick = {
                                 val updated = Account(
                                     name = name,
@@ -444,21 +453,36 @@ fun AccountScreen(accountViewModel: AccountViewModel) {
                                     achievmentId = account.value!!.achievmentId
                                 )
                                 updated.uuidAcc = account.value!!.uuidAcc
+                                if (login != account.value!!.login) {
                                 scope.launch {
                                     valid.value = accountViewModel.checkLogin(login)
-                                if (valid.value) {
+                                    if(login=="" || name=="" || email==""){
+                                        scope.launch {
+                                            val snackbarText = context.getString(R.string.snackbar_empty)
+                                            snackbarHostState.showSnackbar(snackbarText)
+                                        }}
+                                else if (valid.value) {
                                     val snackbarText = context.getString(R.string.snackbar_login)
                                     scope.launch {
                                         snackbarHostState.showSnackbar(snackbarText)
-                                    }} else {
+                                    }}
+                                else {
                                 accountViewModel.update(updated)
                                 with(sharedPref.edit()) {
                                     putString("logged_in_user", login)
                                     apply()
                                 }
                                 editMode = false
-                                scope.launch { accountViewModel.getIdByLogin(login) }
-                            }}})
+                                scope.launch { accountViewModel.getIdByLogin(login) }}
+                            }} else {
+                                    accountViewModel.update(updated)
+                                    with(sharedPref.edit()) {
+                                        putString("logged_in_user", login)
+                                        apply()
+                                    }
+                                    editMode = false
+                                    scope.launch { accountViewModel.getIdByLogin(login) }
+                            }})
                             {
                                 Icon(
                                     imageVector = Icons.Filled.Check,

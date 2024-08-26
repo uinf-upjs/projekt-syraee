@@ -31,7 +31,9 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import app.discmaster.database.AccountViewModel
+import app.discmaster.database.AchievmentViewModel
 import app.discmaster.database.entities.Account
+import app.discmaster.database.entities.Achievment
 import kotlinx.coroutines.launch
 import org.mindrot.jbcrypt.BCrypt
 
@@ -39,18 +41,22 @@ class RegistrationActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            Registration(accountViewModel)
+            Registration(accountViewModel, achievmentViewModel)
         }
     }
     private val accountViewModel: AccountViewModel by viewModels {
         AccountViewModel.AccountViewModelFactory((application as DiscMasterAplication).accountRepository)
+    }
+
+    private val achievmentViewModel: AchievmentViewModel by viewModels {
+        AchievmentViewModel.AchievmentViewModelFactory((application as DiscMasterAplication).achievmentRepository)
     }
 }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Registration(accountViewModel: AccountViewModel) {
+fun Registration(accountViewModel: AccountViewModel, achievmentViewModel: AchievmentViewModel) {
 
     val context = LocalContext.current
     var firstName by remember { mutableStateOf("") }
@@ -58,8 +64,8 @@ fun Registration(accountViewModel: AccountViewModel) {
     var loginName by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
-    val clubs = listOf("KEFEAR", "Sky Up", "Paskudy")
-    val hands = listOf("Prava", "Lava")
+    val clubs = listOf("KEFEAR", "Sky Up", "Paskudy", "Outsiterz", "CENADA", "Tri Veže", "Kus Plastu", "North Side Turzovka", "Banník lásky")
+    val hands = listOf(stringResource(id = R.string.right_hand), stringResource(id = R.string.left_hand))
     var selectedClub by remember { mutableStateOf(clubs[0]) }
     var selectedHand by remember { mutableStateOf(hands[0]) }
 
@@ -242,6 +248,27 @@ fun Registration(accountViewModel: AccountViewModel) {
                             snackbarHostState.showSnackbar(snackbarText)
                         }
                 } else {
+                    achievmentViewModel.clearDatabase()
+                        scope.launch {
+                            achievmentViewModel.insert(Achievment("Nadšenec do disku", 1000, "-", 0, "-", "-","android.resource://${context.packageName}/drawable/disc_enthusiast" ))
+                            achievmentViewModel.insert(Achievment("Závislák do disku",10000,"-", 0, "-", "-","android.resource://${context.packageName}/drawable/disc_addict"))
+                            achievmentViewModel.insert(Achievment("Sto-tisícový hádzač",100000,"-", 0, "-", "-","android.resource://${context.packageName}/drawable/hundred_thousand_thrower"))
+                            achievmentViewModel.insert(Achievment("Miliónový hádzač",1000000,"-", 0, "-", "-","android.resource://${context.packageName}/drawable/milion_thrower"))
+                            achievmentViewModel.insert(Achievment("Obojručne zručný",200,"-", 0, "-", "-","android.resource://${context.packageName}/drawable/balanced_1"))
+                            achievmentViewModel.insert(Achievment("Obojručne zručnejší",500,"-", 0, "-", "-","android.resource://${context.packageName}/drawable/balanced_2"))
+                            achievmentViewModel.insert(Achievment("Obojručne najzručnejší",1000,"-", 0, "-", "-","android.resource://${context.packageName}/drawable/balanced_3"))
+                            achievmentViewModel.insert(Achievment("Vianočný špeciál",1224,"-", 0, "-", "-","android.resource://${context.packageName}/drawable/christmas_special"))
+                            achievmentViewModel.insert(Achievment("Mokrý rúcač",500,"-", 0, "daždivo", "-","android.resource://${context.packageName}/drawable/in_rain"))
+                            achievmentViewModel.insert(Achievment("Eskimák",500,"-", 0, "sneženie", "-","android.resource://${context.packageName}/drawable/in_snow"))
+                            achievmentViewModel.insert(Achievment("Šampión vánku",500,"-", 0, "veterno", "-","android.resource://${context.packageName}/drawable/in_wind"))
+                            achievmentViewModel.insert(Achievment("Dlhý backhand",250,"-", 40, "-", "backhand","android.resource://${context.packageName}/drawable/long_backhand"))
+                            achievmentViewModel.insert(Achievment("Dlhý forehand",250,"-", 40, "-", "forehand","android.resource://${context.packageName}/drawable/long_forehand"))
+                            achievmentViewModel.insert(Achievment("Dlhý overhead",150,"-", 40, "-", "overhead","android.resource://${context.packageName}/drawable/long_overhead"))
+                            achievmentViewModel.insert(Achievment("Krátky backhand",1000,"-", 20, "-", "backhand","android.resource://${context.packageName}/drawable/short_backhand"))
+                            achievmentViewModel.insert(Achievment("Krátky forehand",1000,"-", 20, "-", "forehand","android.resource://${context.packageName}/drawable/short_forehand"))
+                            achievmentViewModel.insert(Achievment("Krátky overhead",600,"-", 20, "-", "overhead","android.resource://${context.packageName}/drawable/short_overhead"))
+
+                        }
                     val hashedPassword = hashPassword(password.trim())
                     val account = Account(
                         firstName.trim(),

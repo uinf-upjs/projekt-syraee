@@ -20,4 +20,9 @@ class AchievmentRepository(private val achievmentDao: AchievmentDao) {
     suspend fun getAllAchievments(): List<Achievment>{
         return achievmentDao.getAllAchievments()
     }
+
+    suspend fun clearDatabase() {
+        achievmentDao.deleteAllAchievments()
+
+    }
 }

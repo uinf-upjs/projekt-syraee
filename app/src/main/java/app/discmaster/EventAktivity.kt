@@ -67,8 +67,6 @@ class EventAktivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-
-            Log.d("EventActivity", "Received UUID: $eventUUID")
             eventUUID?.let {
                 eventViewModel.getEvent(it)
                 EventScreen(eventViewModel = eventViewModel, accountViewModel = accountViewModel)
@@ -129,7 +127,13 @@ fun EventScreen(eventViewModel: EventViewModel, accountViewModel: AccountViewMod
                             .fillMaxWidth()
                             .fillMaxHeight(),
                             contentAlignment = Alignment.CenterEnd){Row(verticalAlignment = Alignment.CenterVertically){
-                            IconButton(onClick = { }) {
+                            IconButton(onClick = {
+                                context.startActivity(
+                                    Intent(context, AddEventAktivity::class.java).apply {
+                                        putExtra("EVENT_UUID", event.value!!.uuidEve.toString())
+                                    }
+                                )
+                            }) {
                                 Icon(imageVector = Icons.Filled.Edit, contentDescription = "edit")
                             }
                             IconButton(onClick = {

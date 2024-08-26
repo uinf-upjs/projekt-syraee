@@ -44,8 +44,8 @@
         <string name="left_hand">Ľavá</string>
     <string name="dominant_hand">Dominantná</string>
     <string name="weak_hand">Slabá</string>
-    <string name="sunny">Slnečno</string>
-    <string name="rainy">Daždivo</string>
-    <string name="snowing">Sneženie</string>
-    <string name="windy">Veterno</string>
+    <string name="sunny">slnečno</string>
+    <string name="rainy">daždivo</string>
+    <string name="snowing">sneženie</string>
+    <string name="windy">veterno</string>
     </resources>

@@ -61,6 +61,12 @@ class AccountViewModel (private val accountRepository: AccountRepository) : View
 
     }
 
+    fun updateEvent(event: Event) {
+        viewModelScope.launch { accountRepository.updateEvent(event)
+        }
+
+    }
+
     suspend fun checkLogin(login: String) : Boolean {
         return withContext(Dispatchers.IO) {
              accountRepository.existingLogin(login)

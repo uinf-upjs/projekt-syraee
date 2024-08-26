@@ -20,6 +20,9 @@ interface AchievmentDao {
     @Query("DELETE FROM achievment WHERE uuidAch = :uuid")
     suspend fun delete(uuid: UUID)
 
+    @Query("DELETE FROM achievment")
+    suspend fun deleteAllAchievments()
+
     @Query("SELECT * FROM achievment")
     suspend fun getAllAchievments(): List<Achievment>
 
